@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
@@ -22,12 +23,10 @@ public class Main {
 
 
         //12.3.b - sort by age and add to new collection
-        List<User> sortedList = new ArrayList<>(userList.size());
-        userList.sort(Comparator.comparing(User::getAge));
-        sortedList.addAll(userList);
-        System.out.println("List sorted by age: ");
-        sortedList.forEach(user -> System.out.println(user.toString()));
-
+        //List<User> sortedList = new ArrayList<>(userList.size());
+        List<User> sortedListl = userList.stream()
+                .sorted(Comparator.comparing(User::getAge))
+                .collect(Collectors.toList());
 
         //12.3.c - calculate middle age of users
         OptionalDouble averageAgeOfUsers = userList.stream().mapToInt(e -> e.getAge()).average();
@@ -35,6 +34,7 @@ public class Main {
 
 
         //12.3.d - sort by some properies
+
         Comparator<User> comparatorOfUsers = (User u1, User u2) ->{
             if (u1.getLastName() == u2.getLastName()) {
 
@@ -42,24 +42,20 @@ public class Main {
             }
             return u1.getLastName().compareTo(u2.getLastName());
         };
+
         System.out.println("\nList sorted by last name and first name: ");
-        userList.sort(comparatorOfUsers);
-        for (User user: userList) {
+        List<User> sortedByLastName = userList.stream().sorted(comparatorOfUsers).collect(Collectors.toList());
+        for (User user: sortedByLastName) {
             System.out.println(user);
         }
 
-        //12.3.e - check if any surname starts with S or A
-        boolean boolVar = userList.stream().anyMatch(user -> user.getLastName().startsWith("S"));
+        //12.3.e - check if any surname starts with S or A/.
+         boolean boolVar =  userList.stream().anyMatch(user -> (user.getLastName().matches("^(?i:[AS]).*")));
+
         if (boolVar == true) {
-            System.out.println("\nThere are users with surname started by S");
+            System.out.println("\nThere are users with surname started by S or A");
         } else {
-            System.out.println("\nThere are no  users with surname started by S");
-        }
-        boolVar = userList.stream().anyMatch(user -> user.getLastName().startsWith("A"));
-        if (boolVar == true) {
-            System.out.println("\nThere are users with surname started by A");
-        } else {
-            System.out.println("\nThere are no users with surname started by A");
+            System.out.println("\nThere are no users with surname started by S or A");
         }
 
 
